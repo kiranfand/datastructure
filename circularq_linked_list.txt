@@ -1,0 +1,83 @@
+
+class Node {
+    int data;
+    Node next;
+
+    public Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class CircularQueue {
+    private Node front;
+    private Node rear;
+
+    public CircularQueue() {
+        this.front = null;
+        this.rear = null;
+    }
+
+    public boolean isEmpty() {
+        return front == null;
+    }
+
+    public void enqueue(int data) {
+        Node newNode = new Node(data);
+        if (isEmpty()) {
+            front = newNode;
+            rear = newNode;
+            rear.next = front; // Point rear to front to make the queue circular.
+        } else {
+            rear.next = newNode;
+            rear = newNode;
+            rear.next = front; // Make rear point to the front to maintain the circular structure.
+        }
+    }
+
+    public int dequeue() {
+        if (isEmpty()) {
+            throw new IllegalStateException("Queue is empty. Cannot perform dequeue operation.");
+        }
+
+        int data = front.data;
+        if (front == rear) {
+            front = null;
+            rear = null; // If there's only one element in the queue, set front and rear to null.
+        } else {
+            front = front.next;
+            rear.next = front; // Move front to the next node and maintain the circular structure.
+        }
+        return data;
+    }
+
+    public int peek() {
+        if (isEmpty()) {
+            throw new IllegalStateException("Queue is empty. Cannot perform peek operation.");
+        }
+        return front.data;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        CircularQueue queue = new CircularQueue();
+
+        queue.enqueue(10);
+        queue.enqueue(20);
+        queue.enqueue(30);
+
+        System.out.println("Front element: " + queue.peek()); // Output: Front element: 10
+
+        int dequeuedElement = queue.dequeue();
+        System.out.println("Dequeued element: " + dequeuedElement); // Output: Dequeued element: 10
+
+        queue.enqueue(40);
+        queue.enqueue(50);
+
+        // Print the elements in the queue
+        while (!queue.isEmpty()) {
+            System.out.print(queue.dequeue() + " "); // Output: 20 30 40 50
+        }
+    }
+}
